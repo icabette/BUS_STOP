@@ -36,7 +36,7 @@ def sendEmail(busInfo):
     smtp.login(pw.id, pw.password)
     
     for i in busInfo:
-        msgBody = msgBody + i[0] + "번 버스 도착까지 " + i[1] + "분 남았습니다. 다음 버스는 " + i[2] + "분 후에 도착합니다."
+        msgBody = msgBody + i[0] + "번 버스 도착까지 " + i[1] + "분 남았습니다. 다음 버스는 " + i[2] + "분 후에 도착합니다.\n\r"
     msg = MIMEText(msgBody)
     msg['Subject'] = '버스 도착 시간 안내'
     msg['From'] = pw.email
