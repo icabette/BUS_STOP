@@ -23,7 +23,8 @@ def searchBusInfo(root):
     busInfo = []
     for child in root.iter('item'):
         busNo = child.find('lineno').text
-        if busNo == '51' or busNo == '77' or busNo == '100-1' :
+        bstopid = child.find('bstopid').text
+        if (bstopid == '175830201' and busNo == '51') or (bstopid == '175830301' and (busNo == '77' or busNo == '100-1')) :
             busInfo.append(child.find('lineno').text)
             busInfo.append(child.find('min1').text)
             busInfo.append(child.find('min2').text)
@@ -35,8 +36,18 @@ def sendEmail(busInfo):
     smtp.starttls()  # TLS 사용시 필요
     smtp.login(pw.id, pw.password)
     
+    msgBody = str()
     for i in busInfo:
-        msgBody = msgBody + i[0] + "번 버스 도착까지 " + i[1] + "분 남았습니다. 다음 버스는 " + i[2] + "분 후에 도착합니다.\n\r"
+        locPointer = 3
+        currentLoc = 1
+        for j in i:
+            if (currentLoc%locPointer == 1):
+                msgBody = msgBody + j + "번 버스 도착까지 "
+            elif (currentLoc%locPointer == 2):
+                msgBody = msgBody + j + "분 남았습니다. 다음 버스는 "
+            else:
+                msgBody = msgBody + j + "분 후에 도착합니다.\n\r"
+            currentLoc = currentLoc + 1
     msg = MIMEText(msgBody)
     msg['Subject'] = '버스 도착 시간 안내'
     msg['From'] = pw.email
